@@ -3,6 +3,7 @@ package com.testcompany;
 import com.google.gson.Gson;
 import com.testcompany.entity.User;
 import com.testcompany.service.BooksService;
+import com.testcompany.service.ReadersService;
 import com.testcompany.service.UserService;
 
 import java.io.*;
@@ -65,6 +66,17 @@ public class CommandService implements Runnable {
 				}
 				return "Invalid";
 			});
+
+			put("fetchReaders", e -> {
+				ReadersService readersService = new ReadersService();
+				try {
+					//convert list to json
+					return new Gson().toJson(readersService.getAllReaders());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
 		}
 	};
 
@@ -96,7 +108,7 @@ public class CommandService implements Runnable {
 				 BufferedReader bufferedInputReader = new BufferedReader(
 				 		new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8)))
 			{
-				System.out.println("Connection accepted");
+				System.out.println("\n\n\nConnection accepted");
 
 				// Read the command and data from the client
 				String receivedCommand = bufferedInputReader.readLine();
@@ -105,14 +117,15 @@ public class CommandService implements Runnable {
 				System.out.println("Command received:  " + receivedCommand);
 				System.out.println("Data received:  " + receivedData);
 
-				String result = map.get(receivedCommand).executeTask(receivedData);
-
-				if (result.isEmpty()) {
+				if (map.get(receivedCommand)==null) {
 					System.out.println("Unexpected command!");
-				} else {
-					System.out.println("Sending back to client: " + result);
+					outputToClient(bufferedOutputWriter, "Unexpected command!", true);
 				}
-				outputToClient(bufferedOutputWriter, result, true);
+				else {
+					String result = map.get(receivedCommand).executeTask(receivedData);
+					System.out.println("Sending back to client: " + result);
+					outputToClient(bufferedOutputWriter, result, true);
+				}
 
 			} catch (SocketTimeoutException ste) {
 				// timeout every .25 seconds to see if interrupted
