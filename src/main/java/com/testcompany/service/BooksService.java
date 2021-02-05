@@ -21,6 +21,8 @@ public class BooksService {
         booksDao.create(newBook);
     }
 
+    public void deleteBook (int ID) { booksDao.remove(1); }
+
     public void updateBook (Books updatedBook) {
         booksDao.update(updatedBook);
     }

@@ -40,7 +40,8 @@ public abstract class GenericDao <T> {
         }
     }
 
-    public void remove(T entity, int entityId) {
+//    public void remove(T entity, int entityId) {
+    public void remove(int entityId) {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();

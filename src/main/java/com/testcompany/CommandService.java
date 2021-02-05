@@ -1,7 +1,9 @@
 package com.testcompany;
 
 import com.google.gson.Gson;
+import com.testcompany.entity.Books;
 import com.testcompany.entity.User;
+import com.testcompany.service.AdminsService;
 import com.testcompany.service.BooksService;
 import com.testcompany.service.ReadersService;
 import com.testcompany.service.UserService;
@@ -32,17 +34,6 @@ public class CommandService implements Runnable {
 
 		//Anonymous Subclass to Initialize the HashMap
 		{
-			put("addUser", (user) -> {
-				User inputUser = new Gson().fromJson(user, User.class);
-				UserService userService = new UserService();
-				try {
-					userService.addUser(inputUser);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return "Valid";
-			});
-
 			put("login", (user) -> {
 				System.out.println("Trying to login...");
 				User inputUser = new Gson().fromJson(user, User.class);
@@ -56,6 +47,41 @@ public class CommandService implements Runnable {
 				return "Invalid credentials";
 			});
 
+			put("addUser", (user) -> {
+				User inputUser = new Gson().fromJson(user, User.class);
+				UserService userService = new UserService();
+				try {
+					userService.addUser(inputUser);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("modifyUser", (user) -> {
+				User modifiedUser = new Gson().fromJson(user, User.class);
+				UserService userService = new UserService();
+				try {
+					userService.updateUser(modifiedUser);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Valid";
+			});
+
+			put("fetchAdmins", e -> {
+				AdminsService adminsService = new AdminsService();
+				try {
+					//convert list to json
+					return new Gson().toJson(adminsService.getAllAdmins());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
+
 			put("fetchBooks", e -> {
 				BooksService booksService = new BooksService();
 				try {
@@ -63,6 +89,31 @@ public class CommandService implements Runnable {
 					return new Gson().toJson(booksService.getAllBooks());
 				} catch (Exception ex) {
 					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("addBook", (book) -> {
+				Books inputBook = new Gson().fromJson(book, Books.class);
+				BooksService booksService = new BooksService();
+				try {
+					booksService.addBook(inputBook);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("removeBook", (bookId) -> {
+				int id = Integer.parseInt(bookId);
+				BooksService booksService = new BooksService();
+				try {
+					booksService.deleteBook(id);
+					System.out.println("Deleting book with ID:" + id);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				return "Invalid";
 			});
@@ -147,6 +198,4 @@ public class CommandService implements Runnable {
 
 		bufferedOutputWriter.flush();
 	}
-
-
 }
