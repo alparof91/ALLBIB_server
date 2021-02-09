@@ -6,7 +6,7 @@
     <persistence-unit name="ALLBIB" transaction-type="RESOURCE_LOCAL">
         <class>com.testcompany.entity.User</class>
         <class>com.testcompany.entity.Readers</class>
-        <class>com.testcompany.entity.Books</class>
+        <class>com.testcompany.entity.Book</class>
         <properties>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/biblioteca"/>

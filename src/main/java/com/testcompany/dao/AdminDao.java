@@ -1,6 +1,6 @@
 package com.testcompany.dao;
 
-import com.testcompany.entity.Books;
+import com.testcompany.entity.Admin;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,12 +11,12 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class BooksDao extends GenericDao<Books> {
+public class AdminDao extends GenericDao<Admin> {
 
     private final EntityManagerFactory factory;
 
-    public BooksDao(EntityManagerFactory factory) {
-        super(Books.class);
+    public AdminDao(EntityManagerFactory factory) {
+        super(Admin.class);
         this.factory = factory;
     }
 
@@ -30,44 +30,44 @@ public class BooksDao extends GenericDao<Books> {
         }
     }
 
-    public List<Books> findByTitle(String title) {
+    public List<Admin> findByFirstName(String firstName) {
         EntityManager entityManager = getEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Books> q = cb.createQuery(Books.class);
+        CriteriaQuery<Admin> q = cb.createQuery(Admin.class);
 
-        Root<Books> c = q.from(Books.class);
+        Root<Admin> c = q.from(Admin.class);
         ParameterExpression<String> paramName = cb.parameter(String.class);
-        q.select(c).where(cb.equal(c.get("title"), paramName));
-        TypedQuery<Books> query = entityManager.createQuery(q);
-        query.setParameter(paramName, title);
+        q.select(c).where(cb.equal(c.get("firstName"), paramName));
+        TypedQuery<Admin> query = entityManager.createQuery(q);
+        query.setParameter(paramName, firstName);
 
         return query.getResultList();
     }
 
-    public List<Books> findByAuthor (String author) {
+    public List<Admin> findBySecondName (String secondName) {
         EntityManager entityManager = getEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Books> q = cb.createQuery(Books.class);
+        CriteriaQuery<Admin> q = cb.createQuery(Admin.class);
 
-        Root<Books> c = q.from(Books.class);
+        Root<Admin> c = q.from(Admin.class);
         ParameterExpression<String> paramName = cb.parameter(String.class);
-        q.select(c).where(cb.equal(c.get("author"), paramName));
-        TypedQuery<Books> query = entityManager.createQuery(q);
-        query.setParameter(paramName, author);
+        q.select(c).where(cb.equal(c.get("secondName"), paramName));
+        TypedQuery<Admin> query = entityManager.createQuery(q);
+        query.setParameter(paramName, secondName);
 
         return query.getResultList();
     }
 
-    public List<Books> findByPublisher (String publisher) {
+    public List<Admin> findByPhone (String phone) {
         EntityManager entityManager = getEntityManager();
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Books> q = cb.createQuery(Books.class);
+        CriteriaQuery<Admin> q = cb.createQuery(Admin.class);
 
-        Root<Books> c = q.from(Books.class);
+        Root<Admin> c = q.from(Admin.class);
         ParameterExpression<String> paramName = cb.parameter(String.class);
-        q.select(c).where(cb.equal(c.get("publisher"), paramName));
-        TypedQuery<Books> query = entityManager.createQuery(q);
-        query.setParameter(paramName, publisher);
+        q.select(c).where(cb.equal(c.get("phone"), paramName));
+        TypedQuery<Admin> query = entityManager.createQuery(q);
+        query.setParameter(paramName, phone);
 
         return query.getResultList();
     }
