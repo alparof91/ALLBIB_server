@@ -33,9 +33,6 @@ public class Book implements Serializable {
 
 	private String availability;
 
-	@Column(name="readers_id_reader")
-	private int idReader;
-
 	//failed to lazily initialize a collection of role: com.testcompany.entity.Book.bookLogList, could not initialize proxy - no Session
 //	@OneToMany(fetch = FetchType.EAGER)
 //	@OneToMany
@@ -53,7 +50,6 @@ public class Book implements Serializable {
 		this.pages = pages;
 		this.section = section;
 		this.availability = availability;
-		this.idReader = idReader;
 	}
 
 	public Book(String title, String author, String publisher, String year, int pages, String section, String availability) {
@@ -130,14 +126,6 @@ public class Book implements Serializable {
 		this.availability = availability;
 	}
 
-	public int getIdReader() {
-		return idReader;
-	}
-
-	public void setIdReader(int idReader) {
-		this.idReader = idReader;
-	}
-
 //	public Collection<BookLog> getBookLogList() {
 //		return bookLogList;
 //	}
@@ -157,7 +145,6 @@ public class Book implements Serializable {
 				", pages=" + pages +
 				", section='" + section + '\'' +
 				", availability='" + availability + '\'' +
-				", idReader=" + idReader +
 				'}';
 	}
 }

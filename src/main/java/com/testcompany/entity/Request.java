@@ -2,6 +2,7 @@ package com.testcompany.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 
 /**
@@ -24,15 +25,19 @@ public class Request implements Serializable {
 	private String username;
 
 	@Column(name="request_date")
-	private String requestDate;
+	private LocalDate requestDate;
 
 	public Request() {
 	}
 
-	public Request(Book book, String username, String requestDate) {
+	public Request(Book book, String username, LocalDate requestDate) {
 		this.book = book;
 		this.username = username;
 		this.requestDate = requestDate;
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
 	}
 
 	public Integer getIdRequest() {
@@ -59,11 +64,11 @@ public class Request implements Serializable {
 		this.username = username;
 	}
 
-	public String getRequestDate() {
+	public LocalDate getRequestDate() {
 		return requestDate;
 	}
 
-	public void setRequestDate(String requestDate) {
+	public void setRequestDate(LocalDate requestDate) {
 		this.requestDate = requestDate;
 	}
 

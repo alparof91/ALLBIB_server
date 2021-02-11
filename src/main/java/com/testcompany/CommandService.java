@@ -115,7 +115,7 @@ public class CommandService implements Runnable {
 				return "Invalid";
 			});
 
-			put("modifyBook", (book) -> {
+			put("updateBook", (book) -> {
 				Book modifiedBook = new Gson().fromJson(book, Book.class);
 				BookService bookService = new BookService();
 				try {
@@ -246,6 +246,17 @@ public class CommandService implements Runnable {
 				return "Invalid";
 			});
 
+            put("fetchGivenBooks", e -> {
+                GivenBookService givenBookService = new GivenBookService();
+                try {
+                    //convert list to json
+                    return new Gson().toJson(givenBookService.getAllGivenBooks());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return "Invalid";
+            });
+
 			put("addGivenBook", (givenBook) -> {
 				GivenBook inputGivenBook = new Gson().fromJson(givenBook, GivenBook.class);
 				GivenBookService givenBookService = new GivenBookService();
@@ -267,6 +278,68 @@ public class CommandService implements Runnable {
 					return "Valid";
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("addNotification", (notification) -> {
+				Notification inputNotification = new Gson().fromJson(notification, Notification.class);
+				NotificationService notificationService = new NotificationService();
+				try {
+					notificationService.addNotification(inputNotification);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("removeNotification", (notification) -> {
+				Notification notificationToRemove = new Gson().fromJson(notification, Notification.class);
+				NotificationService notificationService = new NotificationService();
+				try {
+					notificationService.deleteNotification(notificationToRemove, notificationToRemove.getIdNotification());
+					System.out.println("Deleting notification with ID:" + notificationToRemove.getIdNotification());
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("fetchNotifications", e -> {
+				NotificationService notificationService = new NotificationService();
+				try {
+					//convert list to json
+					return new Gson().toJson(notificationService.getAllNotifications());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("fetchNotificationsForBook", (book) -> {
+				Book inputBook = new Gson().fromJson(book, Book.class);
+				NotificationService notificationService = new NotificationService();
+				try {
+					//convert list to json
+					Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+					return gson.toJson(notificationService.getNotificationsForBook(inputBook));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("fetchNotificationsForUser", (username) -> {
+				String inputUser = new Gson().fromJson(username, String.class);
+				NotificationService notificationService = new NotificationService();
+				try {
+					//convert list to json
+//					Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+					return new Gson().toJson(notificationService.getNotificationsForUsername(inputUser));
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
 				return "Invalid";
 			});
