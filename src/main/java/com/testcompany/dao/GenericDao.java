@@ -40,12 +40,11 @@ public abstract class GenericDao <T> {
         }
     }
 
-//    public void remove(T entity, int entityId) {
-    public void remove(int entityId) {
+    public void remove(T entity, int entityId) {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
-            em.remove(em.find(this.entityClass, entityId));
+            em.remove((T) em.find(this.entityClass, entityId));
             em.getTransaction().commit();
         } catch (RuntimeException e) {
             em.getTransaction().rollback();

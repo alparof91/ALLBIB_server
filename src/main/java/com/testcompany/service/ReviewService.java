@@ -25,4 +25,8 @@ public class ReviewService {
     public List<Review> getReviewsForBook(Book inputBook){
         return reviewDao.findByBook(inputBook);
     }
+
+    public void addReview (Review newReview) {
+        reviewDao.create(newReview);
+    }
 }

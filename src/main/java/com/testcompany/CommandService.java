@@ -1,8 +1,8 @@
 package com.testcompany;
 
 import com.google.gson.Gson;
-import com.testcompany.entity.Book;
-import com.testcompany.entity.User;
+import com.google.gson.GsonBuilder;
+import com.testcompany.entity.*;
 import com.testcompany.service.*;
 
 import java.io.*;
@@ -102,17 +102,29 @@ public class CommandService implements Runnable {
 				return "Invalid";
 			});
 
-			put("removeBook", (bookId) -> {
-				int id = Integer.parseInt(bookId);
+			put("removeBook", (book) -> {
+				Book bookToRemove = new Gson().fromJson(book, Book.class);
 				BookService bookService = new BookService();
 				try {
-					bookService.deleteBook(id);
-					System.out.println("Deleting book with ID:" + id);
+					bookService.deleteBook(bookToRemove,bookToRemove.getIdBook());
+					System.out.println("Deleting book with ID:" + bookToRemove.getIdBook());
 					return "Valid";
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				return "Invalid";
+			});
+
+			put("modifyBook", (book) -> {
+				Book modifiedBook = new Gson().fromJson(book, Book.class);
+				BookService bookService = new BookService();
+				try {
+					bookService.updateBook(modifiedBook);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Valid";
 			});
 
 			put("fetchReaders", e -> {
@@ -142,9 +154,119 @@ public class CommandService implements Runnable {
 				ReviewService reviewService = new ReviewService();
 				try {
 					//convert list to json
-					return new Gson().toJson(reviewService.getReviewsForBook(inputBook));
+					Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+					return gson.toJson(reviewService.getReviewsForBook(inputBook));
 				} catch (Exception ex) {
 					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("addReview", (review) -> {
+				Review newReview = new Gson().fromJson(review, Review.class);
+				ReviewService reviewService = new ReviewService();
+				try {
+					reviewService.addReview(newReview);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("addRequest", (request) -> {
+				Request newRequest = new Gson().fromJson(request, Request.class);
+				RequestService requestService = new RequestService();
+				try {
+					requestService.addRequest(newRequest);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("fetchRequests", e -> {
+				RequestService requestService = new RequestService();
+				try {
+					//convert list to json
+					return new Gson().toJson(requestService.getAllRequests());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("removeRequest", (request) -> {
+				Request requestToRemove = new Gson().fromJson(request, Request.class);
+				RequestService requestService = new RequestService();
+				try {
+					requestService.deleteRequest(requestToRemove, requestToRemove.getIdRequest());
+					System.out.println("Deleting request with ID:" + requestToRemove.getIdRequest());
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("fetchBookLogs", e -> {
+				BookLogService bookLogService = new BookLogService();
+				try {
+					//convert list to json
+					return new Gson().toJson(bookLogService.getAllBookLogs());
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("addBookLog", (bookLog) -> {
+				BookLog inputBookLog = new Gson().fromJson(bookLog, BookLog.class);
+				BookLogService bookLogService = new BookLogService();
+				try {
+					bookLogService.addBookLog(inputBookLog);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("fetchBookLogsForBook", (book) -> {
+				Book inputBook = new Gson().fromJson(book, Book.class);
+				BookLogService bookLogService = new BookLogService();
+				try {
+					//convert list to json
+					Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+					return gson.toJson(bookLogService.getBookLogsForBook(inputBook));
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("addGivenBook", (givenBook) -> {
+				GivenBook inputGivenBook = new Gson().fromJson(givenBook, GivenBook.class);
+				GivenBookService givenBookService = new GivenBookService();
+				try {
+					givenBookService.addGivenBook(inputGivenBook);
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return "Invalid";
+			});
+
+			put("removeGivenBook", (givenBook) -> {
+				GivenBook givenBookToRemove = new Gson().fromJson(givenBook, GivenBook.class);
+				GivenBookService givenBookService = new GivenBookService();
+				try {
+					givenBookService.deleteGivenBook(givenBookToRemove, givenBookToRemove.getIdGivenBook());
+					System.out.println("Deleting givenBook with ID:" + givenBookToRemove.getIdGivenBook());
+					return "Valid";
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				return "Invalid";
 			});
