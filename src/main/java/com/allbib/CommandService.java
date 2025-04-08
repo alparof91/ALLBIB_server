@@ -14,7 +14,6 @@ import java.util.HashMap;
 
 @FunctionalInterface
 interface InputDataHandlerInterface<T> {
-	// abstract method
 	String executeTask(T inputData);
 }
 
@@ -37,7 +36,7 @@ public class CommandService implements Runnable {
 				UserService userService = new UserService();
 				try {
 					userService.findUser(inputUser.getUsername(),inputUser.getPassword());
-					return "Valid credentials";
+					return "reader"; // Temporary answer
 				} catch (Exception e) {
 					e.printStackTrace();
 					return e.toString();
@@ -368,7 +367,7 @@ public class CommandService implements Runnable {
 		while (!Thread.interrupted()) {
 			// Use a try-with resources to instantiate the client socket and
 			// buffers for reading and writing messages from and to the client
-			try (Socket socket = serverSocket.accept();
+			try (Socket socket = serverSocket.accept(); // Waits for a client
 				 BufferedWriter bufferedOutputWriter = new BufferedWriter(
 				 		new OutputStreamWriter(socket.getOutputStream()));
 				 BufferedReader bufferedInputReader = new BufferedReader(
