@@ -1,5 +1,6 @@
 package com.allbib;
 
+import com.allbib.utils.gson.GsonUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.allbib.entity.*;
@@ -11,6 +12,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 
 @FunctionalInterface
 interface InputDataHandlerInterface<T> {
@@ -32,10 +34,18 @@ public class CommandService implements Runnable {
 		{
 			put("login", (user) -> {
 				System.out.println("Trying to login...");
-				User inputUser = new Gson().fromJson(user, User.class);
+				User inputUser = GsonUtil.getGson().fromJson(user, User.class);
 				UserService userService = new UserService();
+				AdminService adminService = new AdminService();
 				try {
-					userService.findUser(inputUser.getUsername(),inputUser.getPassword());
+					User dbUser = userService.findUser(inputUser.getUsername(),inputUser.getPassword());
+					int id = dbUser.getIdUser();
+					List<Admin> admins = adminService.getAllAdmins();
+					for (Admin admin : admins) {
+						if (id == admin.getUser().getIdUser()) {
+							return "admin";
+						}
+					}
 					return "reader"; // Temporary answer
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -44,7 +54,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("addUser", (user) -> {
-				User inputUser = new Gson().fromJson(user, User.class);
+				User inputUser = GsonUtil.getGson().fromJson(user, User.class);
 				UserService userService = new UserService();
 				try {
 					userService.addUser(inputUser);
@@ -56,7 +66,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("modifyUser", (user) -> {
-				User modifiedUser = new Gson().fromJson(user, User.class);
+				User modifiedUser = GsonUtil.getGson().fromJson(user, User.class);
 				UserService userService = new UserService();
 				try {
 					userService.updateUser(modifiedUser);
@@ -71,7 +81,7 @@ public class CommandService implements Runnable {
 				AdminService adminService = new AdminService();
 				try {
 					//convert list to json
-					return new Gson().toJson(adminService.getAllAdmins());
+					return GsonUtil.getGson().toJson(adminService.getAllAdmins());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -82,7 +92,7 @@ public class CommandService implements Runnable {
 				BookService bookService = new BookService();
 				try {
 					//convert list to json
-					return new Gson().toJson(bookService.getAllBooks());
+					return GsonUtil.getGson().toJson(bookService.getAllBooks());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -90,7 +100,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("addBook", (book) -> {
-				Book inputBook = new Gson().fromJson(book, Book.class);
+				Book inputBook = GsonUtil.getGson().fromJson(book, Book.class);
 				BookService bookService = new BookService();
 				try {
 					bookService.addBook(inputBook);
@@ -102,7 +112,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("removeBook", (book) -> {
-				Book bookToRemove = new Gson().fromJson(book, Book.class);
+				Book bookToRemove = GsonUtil.getGson().fromJson(book, Book.class);
 				BookService bookService = new BookService();
 				try {
 					bookService.deleteBook(bookToRemove,bookToRemove.getIdBook());
@@ -115,7 +125,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("updateBook", (book) -> {
-				Book modifiedBook = new Gson().fromJson(book, Book.class);
+				Book modifiedBook = GsonUtil.getGson().fromJson(book, Book.class);
 				BookService bookService = new BookService();
 				try {
 					bookService.updateBook(modifiedBook);
@@ -130,7 +140,7 @@ public class CommandService implements Runnable {
 				ReaderService readerService = new ReaderService();
 				try {
 					//convert list to json
-					return new Gson().toJson(readerService.getAllReaders());
+					return GsonUtil.getGson().toJson(readerService.getAllReaders());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -141,7 +151,7 @@ public class CommandService implements Runnable {
 				ReviewService reviewService = new ReviewService();
 				try {
 					//convert list to json
-					return new Gson().toJson(reviewService.getAllReviews());
+					return GsonUtil.getGson().toJson(reviewService.getAllReviews());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -149,12 +159,11 @@ public class CommandService implements Runnable {
 			});
 
 			put("fetchReviewsForBook", (book) -> {
-				Book inputBook = new Gson().fromJson(book, Book.class);
+				Book inputBook = GsonUtil.getGson().fromJson(book, Book.class);
 				ReviewService reviewService = new ReviewService();
 				try {
 					//convert list to json
-					Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-					return gson.toJson(reviewService.getReviewsForBook(inputBook));
+					return GsonUtil.getGson().toJson(reviewService.getReviewsForBook(inputBook));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -162,7 +171,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("addReview", (review) -> {
-				Review newReview = new Gson().fromJson(review, Review.class);
+				Review newReview = GsonUtil.getGson().fromJson(review, Review.class);
 				ReviewService reviewService = new ReviewService();
 				try {
 					reviewService.addReview(newReview);
@@ -174,7 +183,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("addRequest", (request) -> {
-				Request newRequest = new Gson().fromJson(request, Request.class);
+				Request newRequest = GsonUtil.getGson().fromJson(request, Request.class);
 				RequestService requestService = new RequestService();
 				try {
 					requestService.addRequest(newRequest);
@@ -189,7 +198,7 @@ public class CommandService implements Runnable {
 				RequestService requestService = new RequestService();
 				try {
 					//convert list to json
-					return new Gson().toJson(requestService.getAllRequests());
+					return GsonUtil.getGson().toJson(requestService.getAllRequests());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -197,7 +206,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("removeRequest", (request) -> {
-				Request requestToRemove = new Gson().fromJson(request, Request.class);
+				Request requestToRemove = GsonUtil.getGson().fromJson(request, Request.class);
 				RequestService requestService = new RequestService();
 				try {
 					requestService.deleteRequest(requestToRemove, requestToRemove.getIdRequest());
@@ -213,7 +222,7 @@ public class CommandService implements Runnable {
 				BookLogService bookLogService = new BookLogService();
 				try {
 					//convert list to json
-					return new Gson().toJson(bookLogService.getAllBookLogs());
+					return GsonUtil.getGson().toJson(bookLogService.getAllBookLogs());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -221,7 +230,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("addBookLog", (bookLog) -> {
-				BookLog inputBookLog = new Gson().fromJson(bookLog, BookLog.class);
+				BookLog inputBookLog = GsonUtil.getGson().fromJson(bookLog, BookLog.class);
 				BookLogService bookLogService = new BookLogService();
 				try {
 					bookLogService.addBookLog(inputBookLog);
@@ -233,12 +242,11 @@ public class CommandService implements Runnable {
 			});
 
 			put("fetchBookLogsForBook", (book) -> {
-				Book inputBook = new Gson().fromJson(book, Book.class);
+				Book inputBook = GsonUtil.getGson().fromJson(book, Book.class);
 				BookLogService bookLogService = new BookLogService();
 				try {
 					//convert list to json
-					Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-					return gson.toJson(bookLogService.getBookLogsForBook(inputBook));
+					return GsonUtil.getGson().toJson(bookLogService.getBookLogsForBook(inputBook));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -249,7 +257,7 @@ public class CommandService implements Runnable {
                 GivenBookService givenBookService = new GivenBookService();
                 try {
                     //convert list to json
-                    return new Gson().toJson(givenBookService.getAllGivenBooks());
+                    return GsonUtil.getGson().toJson(givenBookService.getAllGivenBooks());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -257,7 +265,7 @@ public class CommandService implements Runnable {
             });
 
 			put("addGivenBook", (givenBook) -> {
-				GivenBook inputGivenBook = new Gson().fromJson(givenBook, GivenBook.class);
+				GivenBook inputGivenBook = GsonUtil.getGson().fromJson(givenBook, GivenBook.class);
 				GivenBookService givenBookService = new GivenBookService();
 				try {
 					givenBookService.addGivenBook(inputGivenBook);
@@ -269,7 +277,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("removeGivenBook", (givenBook) -> {
-				GivenBook givenBookToRemove = new Gson().fromJson(givenBook, GivenBook.class);
+				GivenBook givenBookToRemove = GsonUtil.getGson().fromJson(givenBook, GivenBook.class);
 				GivenBookService givenBookService = new GivenBookService();
 				try {
 					givenBookService.deleteGivenBook(givenBookToRemove, givenBookToRemove.getIdGivenBook());
@@ -282,7 +290,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("addNotification", (notification) -> {
-				Notification inputNotification = new Gson().fromJson(notification, Notification.class);
+				Notification inputNotification = GsonUtil.getGson().fromJson(notification, Notification.class);
 				NotificationService notificationService = new NotificationService();
 				try {
 					notificationService.addNotification(inputNotification);
@@ -294,7 +302,7 @@ public class CommandService implements Runnable {
 			});
 
 			put("removeNotification", (notification) -> {
-				Notification notificationToRemove = new Gson().fromJson(notification, Notification.class);
+				Notification notificationToRemove = GsonUtil.getGson().fromJson(notification, Notification.class);
 				NotificationService notificationService = new NotificationService();
 				try {
 					notificationService.deleteNotification(notificationToRemove, notificationToRemove.getIdNotification());
@@ -310,7 +318,7 @@ public class CommandService implements Runnable {
 				NotificationService notificationService = new NotificationService();
 				try {
 					//convert list to json
-					return new Gson().toJson(notificationService.getAllNotifications());
+					return GsonUtil.getGson().toJson(notificationService.getAllNotifications());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -318,12 +326,11 @@ public class CommandService implements Runnable {
 			});
 
 			put("fetchNotificationsForBook", (book) -> {
-				Book inputBook = new Gson().fromJson(book, Book.class);
+				Book inputBook = GsonUtil.getGson().fromJson(book, Book.class);
 				NotificationService notificationService = new NotificationService();
 				try {
 					//convert list to json
-					Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-					return gson.toJson(notificationService.getNotificationsForBook(inputBook));
+					return GsonUtil.getGson().toJson(notificationService.getNotificationsForBook(inputBook));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -331,12 +338,11 @@ public class CommandService implements Runnable {
 			});
 
 			put("fetchNotificationsForUser", (username) -> {
-				String inputUser = new Gson().fromJson(username, String.class);
+				String inputUser = GsonUtil.getGson().fromJson(username, String.class);
 				NotificationService notificationService = new NotificationService();
 				try {
 					//convert list to json
-//					Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-					return new Gson().toJson(notificationService.getNotificationsForUsername(inputUser));
+					return GsonUtil.getGson().toJson(notificationService.getNotificationsForUsername(inputUser));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

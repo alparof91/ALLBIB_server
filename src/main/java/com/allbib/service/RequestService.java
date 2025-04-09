@@ -22,6 +22,7 @@ public class RequestService {
     }
 
     public void addRequest (Request newRequest) {
+        System.out.println("Trying to add new Request");
         requestDao.create(newRequest);
     }
 
